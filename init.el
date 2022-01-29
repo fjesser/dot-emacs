@@ -136,3 +136,60 @@
 ;; Attach files to mails from dired (C-c C-m C-a)
 (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
 
+
+
+;;; --- Ibuffer 
+;; Overwrite list-buffer default keybinding with ibuffer
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+
+;; Set filter groups
+;; organize buffer list
+(setq ibuffer-saved-filter-groups
+      '(
+	("Default Groups"
+	 ("Org" (and (mode . org-mode)
+		     (not filename . "org/org-roam")))
+	 ("Org-Roam" (and (mode . org-mode)
+			  (filename . "org/org-roam")))
+	 ("PDF" (or (mode . pdf-view-mode)
+		    (mode . doc-view-mode)))
+	 ("LaTeX" (or (mode . latex-mode)
+		      (mode . tex-mode)
+		      (name . "Rnw")
+		      (mode . bibtex-mode)))
+	 ("R" (mode . ess-r-mode))
+	 ("Dired" (mode . dired-mode))
+       	 ("Emacs" (mode . emacs-lisp-mode))
+	 ("Help" (or (name . "\*Help\*")
+		     (name . "\*Apropos\*")
+		     (name . "\*info\*")))
+	 )
+	)
+)
+
+
+
+;; Set hooks for when entering ibuffer
+;; 1. Automatically keep buffer up to date
+;; 2. Apply filter groups by default (see above) 
+(add-hook 'ibuffer-mode-hook
+	  '(lambda ()
+	     (ibuffer-auto-mode 1)
+	     (ibuffer-switch-to-saved-filter-groups "Default Groups")))
+
+
+;; Change Display
+(setq ibuffer-formats '(
+       ;; First display format
+       (mark modified read-only locked " "
+       (name 40 40 :left :elide)
+       " "
+       (mode 16 16 :left :elide)
+       " " filename-and-process)
+       ;; Second display
+       (mark
+	  (size 9 -1 :right)
+           " "
+          (name 40 -1)
+           " " filename)))
+
