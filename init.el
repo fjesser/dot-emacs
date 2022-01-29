@@ -35,4 +35,56 @@
  '(font-latex-slide-title-face ((t (:inherit font-lock-type-face :weight bold))))
  '(org-agenda-date-weekend ((t (:inherit org-agenda-date))))
  '(org-agenda-dimmed-todo-face ((t nil))))
- 
+
+
+
+
+;;; --- General Emacs Settings 
+;;;; ------ General appearance
+(setq tool-bar-mode nil) ;; Disable tool-bar
+
+
+;;;; ------ Mode Line
+;; Set variables to change mode line appearance
+(setq column-number-mode t     ; Enable column number
+      size-indication-mode nil ; Disable size of file
+      )
+
+
+;;;; ------ General behavior
+;; Change number of lines of continuity when scrolling (default: 2)
+;; C-v behavior is changed
+(setq next-screen-context-lines 25)
+
+;; Set width of line to 80 characters (default 70)
+;;(setq-default fill-column 80)
+
+;; Allow sentences to end with a single space after period (for M-e command)
+(setq sentence-end-double-space nil)
+;; Allow that sentence can end without period (e.g., in lists)
+(setq sentence-end-without-period t)
+
+;; Show matching parentheses
+(show-paren-mode 1)
+
+;; Split windows horizontally by default
+;; (setq window-divider-default-places 'right-only)
+;; this command seems not necessary although in earlier days it seems to do the trick
+
+;; Automatically save desktop sessions and restore last saved session
+(desktop-save-mode t)
+
+
+;; Set backup-directory for backup files "name~"
+;; #xy# are autosaved files that are removed when emacs quits normally
+(setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
+(setq backup-by-copying t)
+
+;; start emacs as a server
+;; invoke emacs without starting new emacs process; really important
+; necessary for org-protocol
+(server-start)
+;; Don't request confirmation to kill processes when emacs quits (C-x C-c)
+;; In this way it is not necessary to type "yes" when quitting and a server was started
+(setq confirm-kill-processes nil)
+
