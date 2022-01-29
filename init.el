@@ -88,3 +88,51 @@
 ;; In this way it is not necessary to type "yes" when quitting and a server was started
 (setq confirm-kill-processes nil)
 
+
+
+;;; --- Emacs Lisp Settings 
+
+;; make outline-minor-mode available in elisp mode
+(add-hook 'emacs-lisp-mode-hook 'outline-minor-mode)
+
+
+
+;;; --- Outline
+;;;; ------ Outline-minor-mode
+;; Used for elisp and AUCTeX
+;; It is configured here so that setting the prefix works.
+;; It would not work if it was loaded before setting the prefix
+;; which would happen if loaded after AUCTeX
+
+;; Change prefix key for outline-minor-mode from C-c @ to C-c C-u
+;; C-u because C-ö is not possible
+(setq outline-minor-mode-prefix "")
+(require 'outline)
+
+;;;; ------ Outline-magic
+;; Package used for collapsing headlines
+;; C-tab functionality for folding
+(eval-after-load 'outline '(progn
+                (require 'outline-magic)
+                (define-key outline-minor-mode-map (kbd "<C-tab>") 'outline-cycle)))
+;; Somehow outline-magic binds globally to <tab> (case-sensitive) and
+;; overwrites org-cycle; disable keymapping in outline-magic
+(define-key outline-mode-map [(tab)] nil)
+
+
+
+;;; --- Dired Settings 
+;; Deletion moves files/folders to trash
+(setq delete-by-moving-to-trash t)
+
+;; Automatically update buffer when revisiting it
+(setq dired-auto-revert-buffer t)
+
+;; Don't show hidden files by default
+;; use C-u l on directory to change
+;;(setq dired-listing-switches "-l")
+
+;; Enable gnus-dired-mode in dired-mode
+;; Attach files to mails from dired (C-c C-m C-a)
+(add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
+
