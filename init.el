@@ -240,3 +240,64 @@
 ;; Set kbd for entering mark ring
 (global-set-key (kbd "C-c SPC") 'counsel-mark-ring)
 
+
+
+;;; --- Ivy-Bibtex Settings 
+;; Load ivy-bibtex
+(autoload 'ivy-bibtex "ivy-bibtex" "" t)
+
+;; Set global key-binding for M-x ivy-bibtex
+(global-set-key (kbd "C-ß") 'ivy-bibtex)
+(global-set-key (kbd "C-c ß") 'ivy-bibtex-with-local-bibliography)
+
+;; ivy-bibtex requires ivy's `ivy--regex-ignore-order` regex builder, which
+;; ignores the order of regexp tokens when searching for matching candidates.
+(setq ivy-re-builders-alist
+      '((ivy-bibtex . ivy--regex-ignore-order)
+        (t . ivy--regex-plus)))
+
+;; Set paths to bibliographies
+(setq bibtex-completion-bibliography '("~/Documents/org/bibliography.bib"))
+;; also possible to specy org-mode bibliography files:
+;;      '("/path/to/bibtex-file-1.bib"
+;;          ("/path/to/org-bibtex-file2.org" . "/path/to/bibtex-file.bib")))
+
+;; Retrieve path to PDF from File entry in BibTex file
+;; File entry is set by JabRef
+(setq bibtex-completion-pdf-field "File")
+;; Use specified directory paths as a fallback searching for BibtexKey.pdf
+(setq bibtex-completion-library-path '("~/Documents/org/bibliography_pdf")) ; second entry possible
+
+;; Set notes directory
+(setq bibtex-completion-notes-path "~/Documents/org/org-roam")
+
+;; Set default action of ivy-bibtex to cite (not ivy-bibtex-open-any)
+(setq ivy-bibtex-default-action 'ivy-bibtex-insert-citation)
+
+;; Set default citation command
+(setq bibtex-completion-cite-default-command "autocite")
+
+;; Don't prompt for pre- and postnotes when citing
+(setq bibtex-completion-cite-prompt-for-optional-arguments nil)
+
+;; Open pdf via bibtex-completion in other window
+; This setting also effects M-x orb-note-actions behaviour!
+(setq bibtex-completion-pdf-open-function 'find-file-other-window)
+
+;; Change display of ivy-bibtex interface
+(setq bibtex-completion-display-formats
+    '((article       . "${=has-pdf=:1}${=has-note=:1} ${=type=:3} ${year:4} ${author:36} ${title:*} ${journal:40}")
+      (inbook        . "${=has-pdf=:1}${=has-note=:1} ${=type=:3} ${year:4} ${author:36} ${title:*} Chapter ${chapter:32}")
+      (incollection  . "${=has-pdf=:1}${=has-note=:1} ${=type=:3} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
+      (inproceedings . "${=has-pdf=:1}${=has-note=:1} ${=type=:3} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
+      (t             . "${=has-pdf=:1}${=has-note=:1} ${=type=:3} ${year:4} ${author:36} ${title:*}")))
+
+;; Additional fields for searching
+(setq bibtex-completion-additional-search-fields '(keywords))
+
+;; Overwrite default function to find local bibliography in Rnw files
+;; A new entry is added in the function bibtex-completion-find-local-bibliography
+;; This is done at the end of this file because apparently somewhere in between
+;; ivy-bibtex is loaded again (maybe from org-roam-bibtex) and the defined
+;; function is overwritten again. So look at the bottom
+
