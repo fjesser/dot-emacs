@@ -301,3 +301,19 @@
 ;; ivy-bibtex is loaded again (maybe from org-roam-bibtex) and the defined
 ;; function is overwritten again. So look at the bottom
 
+
+
+;;; --- Yasnippet Settings
+;; template expansion package
+
+;; Set yasnippet dirs
+(setq yas-snippet-dirs '("~/.emacs.d/yasnippet-templates/"))
+;; Globally enable yasnippet minor mode
+(yas-global-mode 1)
+
+;; Disable default keybinding for yasnippet commands in order that org C-c & works
+(define-key yas-minor-mode-map (kbd "\C-c&\C-n") nil) ; yas-new-snippet
+(define-key yas-minor-mode-map (kbd "\C-c&\C-s") nil) ; yas-insert-snippet
+(define-key yas-minor-mode-map (kbd "\C-c&\C-v") nil) ; yas-visit-snippet-file
+(define-key yas-minor-mode-map (kbd "\C-c") nil)      ; C-c prefix key
+(define-key yas-minor-mode-map (kbd "\C-c&") nil)     ; C-c & prefix key
