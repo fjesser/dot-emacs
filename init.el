@@ -202,3 +202,41 @@
 (global-set-key (kbd "M-æ") 'avy-goto-line)       ; M-<Alt Gr>-a
 (global-set-key (kbd "<M-dead-belowdot>") 'avy-goto-char-in-line) ; M-<Alt Gr>-
 
+
+
+
+;;; --- Counsel, Ivy, and Swiper Settings
+;; The counsel package incorporates the ivy package
+
+;; Globally enable ivy and counsel mode
+(ivy-mode 1)
+(counsel-mode 1) ; overwrites common kbd with counsel counterpart
+
+;; Enable ivy-avy
+;; use avy inside ivy with C-'
+(require 'ivy-avy)
+
+;; Set height of ivy minibuffer
+; (setq ivy-height 7) ; default: 10
+
+;; Add recent files and bookmarks to ivy-switch buffer
+(setq ivy-use-virtual-buffers t)
+;; Display index and count in ivy-read (= ivy minibuffer)
+(setq ivy-count-format "(%d/%d) ")
+
+;;;; ------ Keybindings
+;; set kbd for recursive file finding (fuzzy)
+;; needs fzf to be installed
+(global-set-key (kbd "C-x C-M-f") 'counsel-file-jump)
+
+;; Use swiper-isearch instead of default search function
+(global-set-key (kbd "C-s") 'swiper-isearch)
+
+;; completion for kill-ring (M-y after C-y)
+(global-set-key (kbd "M-y") #'counsel-yank-pop)
+;; next entry with M-y when in kill-ring-completion
+(define-key ivy-minibuffer-map (kbd "M-y") #'ivy-next-line)
+
+;; Set kbd for entering mark ring
+(global-set-key (kbd "C-c SPC") 'counsel-mark-ring)
+
