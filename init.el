@@ -193,3 +193,12 @@
           (name 40 -1)
            " " filename)))
 
+
+
+;;; --- Avy Settings 
+;; Package for jumping to visible text
+(global-set-key (kbd "M-ĸ") 'avy-goto-char-timer) ; M-<Alt Gr>-k 
+(global-set-key (kbd "M-ł") 'avy-goto-word-1)     ; M-<Alt Gr>-w (also works with l)
+(global-set-key (kbd "M-æ") 'avy-goto-line)       ; M-<Alt Gr>-a
+(global-set-key (kbd "<M-dead-belowdot>") 'avy-goto-char-in-line) ; M-<Alt Gr>-
+
