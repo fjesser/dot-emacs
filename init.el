@@ -828,3 +828,127 @@ is called by `cfw:cp-set-selected-date'."
 (require 'flycheck-languagetool)
 ;; set path to language tool
 (setq flycheck-languagetool-server-jar "/home/felix/Programs/LanguageTool-5.5-stable/languagetool.jar")
+
+
+
+;;; --- AUCTeX Settings
+;; LaTeX inside Emacs
+
+;; Save style information when saving a buffer
+(setq TeX-auto-save t)
+;; Parse file after loading, if no style hook is found
+(setq TeX-parse-self t)
+
+;; Rename directory where style/parsing information is saved
+(setq TeX-auto-local ".auctex")
+
+;; Ask for Master file
+;; inserts file variable at end of file indicating where master is
+;; (setq-default TeX-master nil)
+
+;; Don't ask whether file should be saved before compilation
+;; Saves source automatically
+(setq TeX-save-query nil)
+
+;; Insert \( \) when pressing $
+(setq TeX-electric-math (cons "\\(" "\\)"))
+
+;; Insert right brace when left brace macro is inserted
+(setq LaTeX-electric-left-right-brace t)
+
+
+;; Activate folding features on default
+(add-hook 'LaTeX-mode-hook (lambda ()
+                             (TeX-fold-mode 1)
+			     (visual-line-mode 1)
+			     (flyspell-mode 1)
+			     (flycheck-mode 1)))
+
+;; Change default pdf-viewer from Evince to pdf-tools: "PDF Tools"
+;; Everything is default value except output-pdf
+(setq TeX-view-program-selection '(((output-dvi has-no-display-manager)
+				    "dvi2tty")
+				   ((output-dvi style-pstricks)
+				    "dvips and gv")
+				   (output-dvi "xdvi")
+				   (output-pdf "PDF Tools")
+				   (output-html "xdg-open")))
+
+;; Refresh buffer after compilation
+(add-hook 'TeX-after-compilation-finished-functions
+        #'TeX-revert-document-buffer)
+
+;; Show warnings after compilation (in addition to errors) - C-c C-t C-w
+(setq TeX-debug-warnings t)
+
+;; Activate correlate mode - sync source and viewer
+;; toggle with C-c C-t C-s
+(setq TeX-source-correlate-mode t)
+
+;; Start server to enable inverse search
+;; necessary for jump from view to source
+(setq TeX-source-correlate-start-server t)
+
+;; Disable fontification of section titles
+;; don't give them larger font
+(setq font-latex-fontify-sectioning 1.0)
+;; via easy-customization: don't give frametitle larger font
+;; font-latex-slide-title-face
+
+;; Add environments to fold
+(setq TeX-fold-env-spec-list '(("[comment]" ("comment"))
+			       ("[frame]" ("frame"))))
+
+
+;; Indentation
+(setq TeX-newline-function 'reindent-then-newline-and-indent) ;; indent when <RET>
+;;(setq TeX-newline-function 'newline)
+(setq LaTeX-indent-level 2)
+(setq LaTeX-item-indent -1)
+
+
+;;;; ------ Minor Mode Settings for AUCTeX
+;; Note, outline minor mode is also used by AUCTeX but is configured
+;; at the top because the prefix variable has to be set early in order
+;; that it is loaded correctly.
+
+;;;;; --------- Outline mode
+(add-hook 'LaTeX-mode-hook 'outline-minor-mode)
+
+;;;;; --------- Flymake 
+;; Activate flymake-mode on default in AUCTeX
+;; Stylechecker with chktex
+(add-hook 'LaTeX-mode-hook #'flymake-mode)
+
+;; Define keybindings for flymake-mode
+(require 'flymake) ;; necessary in order to specify define-key below
+(global-set-key (kbd "C-ü C-f") 'flymake-mode)
+(define-key flymake-mode-map (kbd "C-ü C-n") 'flymake-goto-next-error)
+(define-key flymake-mode-map (kbd "C-ü C-p") 'flymake-goto-prev-error)
+(define-key flymake-mode-map (kbd "C-ü C-b") 'flymake-show-diagnostics-buffer)
+
+
+;;;;; --------- RefTeX
+;; Turn on RefTeX in AUCTeX
+(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+;; Full cooperation between RefTeX and AUCTeX
+(setq reftex-plug-into-AUCTeX t)
+;; RefTeX searches for bib-files (disables default paths)
+(setq reftex-use-exernal-file-finders t)
+
+;; make beamer frametitle available in C-c =
+;; original variable + frametitle
+(setq reftex-section-levels '(
+		  ("part" . 0)
+                  ("chapter" . 1)
+                  ("section" . 2)
+                  ("subsection" . 3)
+                  ("subsubsection" . 4)
+ 		  ("frametitle" . 4)
+                  ("paragraph" . 5)
+                  ("subparagraph" . 6)
+                  ("addchap" . -1)
+                  ("addsec" . -2)
+;;                  ("frametitle" . -2) ;; this is new, - means no numbering
+		  ))
+
