@@ -664,5 +664,53 @@
 	    ,font-family))
     (div nil (,@font (line-height . "11pt"))))))
 
+
+;;; --- Calendar and Diary
 
+;;;; ------ Calendar
+;; Keybinding to open calendar
+(global-set-key (kbd "M-ü M-c") 'calendar)
+;; Set calendar date style to ISO
+(setq calendar-date-style 'iso)
+;; Begin calendar with Monday
+(setq calendar-week-start-day 1)
+;; Set geographical location to retrieve sunrise/sunset
+(setq calendar-latitude XX) ; insert appropriate numbers
+(setq calendar-longitude XX)
+(setq calendar-location-name "XX") ; insert appropriate name
+
+;; Change format of inserted date in calendar
+;; I think there is a bug. When I export a diary file
+;; to ics, dates in the form "year-month-day" are skipped.
+;; However, using the form "year/month/day" works.
+;; This code changes the format. 
+(setq calendar-date-display-form
+      '((format "%s/%.2d/%.2d" year	; changed "-" to "/"
+	 (string-to-number month)
+	 (string-to-number day))))
+
+
+;;;; ------ Diary
+
+;; Main diary file in diary-files folder
+(setq diary-file "~/.emacs.d/diary-files/diary-main")
+
+;; Diary comment characters
+(setq diary-comment-start ";;"
+      diary-comment-end ";;")
+
+
+(add-hook 'diary-display-hook 'fancy-diary-display)
+;; Hooks for fancy diary display
+;; fancy diary display is used by default
+;; enable inclusion of other diary files specified by #include "FILE"
+(add-hook 'diary-list-entries-hook 'diary-include-other-diary-files)
+(add-hook 'diary-mark-entries-hook 'diary-mark-included-diary-files)
+;; sort diary entries (should be the last hook!)
+(add-hook 'diary-list-entries-hook 'diary-sort-entries t)
+
+;; Import nextcloud calendars into diary files
+;; start asynchronous process to source elisp code
+(start-process "import-export-calendars" nil  
+	       "emacs" "-Q" "-batch" "-l" "~/.emacs.d/diary-files/import-export-calendars.el")
 
