@@ -967,3 +967,15 @@ is called by `cfw:cp-set-selected-date'."
 					   (insert "%>%")
 					   (reindent-then-newline-and-indent)
 					   ))
+
+
+;;; --- Polymode Settings 
+;; installed polymode and poly-R
+
+;; disable woven and exported file extension of files
+;; in order that biber works
+(setq polymode-weaver-output-file-format "%s") ;; disable -woven.tex
+(setq polymode-exporter-output-file-format "%s") ;; disable -woven-exported.pdf
+
+;; compile even if nothing changed
+(setq polymode-skip-processing-when-unmodified nil)
