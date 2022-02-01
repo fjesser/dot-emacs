@@ -47,3 +47,35 @@
 ;; Create an ID if needed to make a link to the current entry
 ;; but only if M-x org-store-link (C-c l) is used and not in org-capture
 (setq org-id-link-to-org-use-id 'create-if-interactive)
+
+
+
+;;; --- Org TODO Settings 
+
+;; Enable TODO dependencies; all children have to be done
+;; in order that parent can be done
+(setq org-enforce-todo-dependencies t)
+
+;; Set keybinding for changing state yesterday
+;; (useful for org habits)
+(define-key org-mode-map (kbd "C-c t") 'org-todo-yesterday)
+
+;; Define TODO keywords
+(setq org-todo-keywords
+	'((sequence "TODO(t)" "WAITING(w)" "|" "DONE(d)")
+	  (sequence "ACTIVE(a/!)" "|" "DORMANT(m/!)" "FINISHED(f/!)" )
+	 ) ; /! = log time when leaving state
+) 
+
+;; Change faces for todo keywords 
+(setq org-todo-keyword-faces ; previous added ("UNENLIVENED" . "orange")
+	'( ("WAITING" . "orange") ("ACTIVE" . "lime green") 
+	   ("DORMANT" . "deep sky blue") ("FINISHED" . "forest green")
+	 )
+)
+
+;; Define Priority range
+;; Only default is changed but others are shown for completness
+(setq org-priority-highest '?A) ; '?' means character (I guess)
+(setq org-priority-lowest '?C)
+(setq org-priority-default '?C)
