@@ -35,8 +35,15 @@
 ;; Turn on flyspell (spelling checker) if in org-mode
 (add-hook 'org-mode-hook 'turn-on-flyspell)
 
+
 
 ;;; --- Org Table Settings 
 ;; Shrink all columns which have a shrink cookie, e.g., '<25>', at startup
 (setq org-startup-shrink-all-tables t)
 
+
+
+;;; --- Org Links Settings 
+;; Create an ID if needed to make a link to the current entry
+;; but only if M-x org-store-link (C-c l) is used and not in org-capture
+(setq org-id-link-to-org-use-id 'create-if-interactive)
