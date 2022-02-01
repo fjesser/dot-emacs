@@ -800,3 +800,31 @@ is called by `cfw:cp-set-selected-date'."
 
 ;; add hook to pdf-view to load mode
 (add-hook 'pdf-view-mode-hook 'pdf-continuous-scroll-mode)
+
+
+
+;;; --- Flyspell and Flycheck Settings
+;;;; ------ Flyspell
+;; Turn off flyspell C-keybinding because they overwrite other bindings
+;; especially org-mode
+(with-eval-after-load "flyspell"
+  (progn
+    (define-key flyspell-mode-map (kbd "C-.") 'flyspell-auto-correct-previous-word)
+    (define-key flyspell-mode-map (kbd "C-,") nil)
+    (define-key flyspell-mode-map (kbd "C-M-i") nil)
+    (define-key flyspell-mode-map (kbd "C-;") nil)
+    ))
+
+;; Flyspell-correct
+;; flyspell-correct is a minor mode that provides an ivy interface for flyspell
+;; Seems to be superfluous because flyspell is sufficient with C-.
+;; (require 'flyspell-correct-ivy)
+;; (define-key flyspell-mode-map (kbd "INSERT NEW KBD") 'flyspell-correct-wrapper)
+
+
+;;;; ------ Flycheck-languagetool
+
+;; load package
+(require 'flycheck-languagetool)
+;; set path to language tool
+(setq flycheck-languagetool-server-jar "/home/felix/Programs/LanguageTool-5.5-stable/languagetool.jar")
