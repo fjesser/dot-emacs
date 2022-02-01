@@ -753,3 +753,50 @@ is called by `cfw:cp-set-selected-date'."
 ;; make org agenda bindings available in calendar view
 (setq cfw:org-overwrite-default-keybinding t) ;; 
 
+
+
+;;; --- DocView Settings 
+;; Enable continuous scrolling
+(setq doc-view-continuous t)
+
+
+
+;;; --- PDF-Tools Settings 
+;; pdf-tools a substitute for docview 
+
+;; enable pdf-tools
+(require 'pdf-tools)
+(pdf-tools-install)
+
+;; Disable continuous mode = next page when reaching edge
+; continuous scrolling is not possible in pdf-tools
+; therefore it is annoying to get to the next page with C-n
+(setq pdf-view-continuous nil)
+
+;; Set C-s to isearch and overwrite default swiper
+;; to search within pdf files
+(define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
+
+;; Display full page with newly opened pdf
+(setq pdf-view-display-size "fit-page")
+
+
+;;;; ------ PDF-View-Restore Settings 
+;; Support for opening last known pdf position in pdf-view-mode provided by pdf-tools.
+
+;; Add hook for pdf-view-mode (pdf-tools)
+(add-hook 'pdf-view-mode-hook 'pdf-view-restore-mode)
+
+;; Save positions in folder (not relative to pdf files)
+(setq pdf-view-restore-filename "~/.emacs.d/.pdf-view-restore")
+
+
+;;;; ------ PDF-Continuous-Scroll-Mode 
+;; toggle mode with c in pdf-view
+;; Extra mode loaded from Github (not Melpa!; has to be updated manually!)
+;; .el-file is placed in ~/.emacs.d
+(eval-after-load "pdf-view"
+  '(load "~/.emacs.d/pdf-continuous-scroll-mode.el"))
+
+;; add hook to pdf-view to load mode
+(add-hook 'pdf-view-mode-hook 'pdf-continuous-scroll-mode)
