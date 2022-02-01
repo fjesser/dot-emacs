@@ -1,0 +1,9 @@
+;; Main Diary File ;;
+
+;; Include other diary files ;;
+
+#include "~/.emacs.d/diary-files/CALENDAR1"
+#include "~/.emacs.d/diary-files/CALENDAR2"
+
+
+
