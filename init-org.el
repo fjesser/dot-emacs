@@ -34,3 +34,9 @@
 (add-hook 'org-mode-hook 'visual-line-mode)
 ;; Turn on flyspell (spelling checker) if in org-mode
 (add-hook 'org-mode-hook 'turn-on-flyspell)
+
+
+;;; --- Org Table Settings 
+;; Shrink all columns which have a shrink cookie, e.g., '<25>', at startup
+(setq org-startup-shrink-all-tables t)
+
