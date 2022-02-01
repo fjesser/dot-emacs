@@ -952,3 +952,18 @@ is called by `cfw:cp-set-selected-date'."
 ;;                  ("frametitle" . -2) ;; this is new, - means no numbering
 		  ))
 
+
+;;; --- ESS Settings 
+;; require R features (doesn't include "S" features)
+(require 'ess-r-mode) ;; necessary for further config
+
+;; ---------- Keybindings
+;; Kbd for assignment operator
+(define-key ess-r-mode-map (kbd "M-_") #'ess-insert-assign)
+;; Kbd for magrittr pipe
+(define-key ess-r-mode-map (kbd "C-S-m") (lambda ()
+					   (interactive)
+					   (just-one-space 1)
+					   (insert "%>%")
+					   (reindent-then-newline-and-indent)
+					   ))
