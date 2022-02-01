@@ -714,3 +714,42 @@
 (start-process "import-export-calendars" nil  
 	       "emacs" "-Q" "-batch" "-l" "~/.emacs.d/diary-files/import-export-calendars.el")
 
+
+;;; --- calfw
+;; calfw depends on cl which is a deprecated package
+;; Suppress the warning that this package is deprecated
+;; must be executed before requiring calfw
+(setq byte-compile-warnings '(cl-functions))
+
+;; require calfw
+(require 'calfw)
+
+;; calfw is not really actively developed (last commit on 2018 [2022-01-21])
+;; when calfw buffer is burried the cursor of the previous buffer is moved
+;; which is quite annoying (actually it is moved before)
+;; There is a fix suggested by a user on github changing an internal function
+;; https://github.com/kiwanami/emacs-calfw/issues/61
+;; in short: instead of the current-buffer the *cfw-calendar* buffer is chosen
+(defun cfw:cp-move-cursor (dest date)
+  "[internal] Just move the cursor onto the date. This function
+is called by `cfw:cp-set-selected-date'."
+  (let ((pos (cfw:find-by-date dest date)))
+    (when pos
+      (goto-char pos)
+      (when ;; from this line on the original code is changed
+          (and
+            (get-buffer-window cfw:calendar-buffer-name)
+            (not (eql (selected-window) (get-buffer-window cfw:calendar-buffer-name))))
+        (set-window-point (get-buffer-window cfw:calendar-buffer-name) pos)))))
+
+
+
+;;;; ------ calfw-org
+;; different package; provides integration of calfw with org
+(require 'calfw-org) 
+;; Keybinding
+(global-set-key (kbd "M-ü c") 'cfw:open-org-calendar) ;; is not cfw:open-calendar-buffer
+
+;; make org agenda bindings available in calendar view
+(setq cfw:org-overwrite-default-keybinding t) ;; 
+
