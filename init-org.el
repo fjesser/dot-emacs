@@ -124,3 +124,57 @@
 
 ;; Global effort estimates are defined in the variable
 ;; org-global-properties above in the section Properties and Column View
+
+
+
+
+;;; --- Capture Org Settings 
+;; Create capture templates
+(setq org-capture-templates
+	'(
+    ("t" "Templates for TODO entries")
+        ("tg" "Todo General (without timestamp)" entry
+	        (file+olp (lambda ()
+                        (concat org-directory "/Org-Main.org")) "Orga" "General")
+		"* TODO %?"
+	)
+        ("tt" "Today Todo General" entry
+	        (file+olp (lambda ()
+                        (concat org-directory "/Org-Main.org")) "Orga" "General")
+		"* TODO %?\n SCHEDULED: %t"
+	)
+	("tm" "Tomorrow Todo General" entry
+	 	(file+olp (lambda ()
+                        (concat org-directory "/Org-Main.org")) "Orga" "General")
+		"* TODO %?\n SCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+1d\"))"
+	)
+    ("i" "Idea" )
+        ("ia" "Academic Idea" entry
+	(file+olp (lambda ()
+		     (concat org-directory "/Org-Main.org")) "Ideas")
+		  "* %?\n %u")
+    ("p" "PhD Course Template" entry
+        (file (lambda () (concat org-directory "/PhD.org")))
+	(file "~/.emacs.d/org-capture-templates/phd-course-template.org")
+    )
+    ("j" "Journal entries")
+        ("jr" "Regular Journal entry" entry 
+	 (file+olp+datetree (lambda () 
+			      (concat org-directory "/journal.org")))
+	 "* Regular Journal entry :regular:\nEntered on %U\n\n%?\n"
+	 :clock-in t
+	 )
+	("jd" "Dream Diary" entry
+	 (file+olp+datetree (lambda ()
+			      (concat org-directory "/journal.org")))
+	 "* Dream Diary :dream-diary:\nEntered on %U\n\n%?\n"
+	 :clock-in t
+	 )
+	("jj" "Joy Diary (Inspiration, Gratitude)" entry
+	 (file+olp+datetree (lambda ()
+			      (concat org-directory "/journal.org")))
+	 "* Joy/Inspiration/Gratitude Diary :joy-diary:\nEntered on %U\n\n%?\n"
+	 :clock-in t
+	 )
+))
+
