@@ -79,3 +79,22 @@
 (setq org-priority-highest '?A) ; '?' means character (I guess)
 (setq org-priority-lowest '?C)
 (setq org-priority-default '?C)
+
+
+
+;;; --- Org Tag Settings 
+
+;; Define globals tags (further tags can be added per file basis)
+; This variable is different from org-tag-alist. org-tag-alist tags would
+; be turned of when #+TAGS are defined in a file
+(setq org-tag-persistent-alist '(
+				 ("FLAGGED" . ?f)  ; special tag for agendas
+				 ("noexport" . ?n) ; don't export tree and subtrees
+				 ("easy" . ?e)
+				 ("project" . ?p)
+				 ("work" . ?w)
+				 ("repeated" . ?r)
+))
+
+;; Exclusion of certain tags for tag inheritance
+(setq org-tags-exclude-from-inheritance '("project" "FLAGGED"))
