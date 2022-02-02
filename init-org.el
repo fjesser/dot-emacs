@@ -183,3 +183,32 @@
 ;;; --- Refiling Org Settings
 ;; Define refile targets to move captured content to
 (setq org-refile-targets '((org-agenda-files :maxlevel . 4)))
+
+
+
+;;; --- Attachment Org Settings 
+;; Load module. This is only necessary to provide a function from
+;; this module for export when org-attach was not yet invoked.
+;; Apparently, the module is only loaded when org-attach is used.
+;; The function org-attach-expand-links is then automatically added to
+;; org-export-before-parsing-hook
+(require 'org-attach)
+
+;; Change programs to use to open attachments
+(setq org-file-apps
+   (quote
+    ((auto-mode . emacs)
+     (directory . "nautilus file://%s")
+     ("\\.mm\\'" . default)
+     ("\\.x?html?\\'" . default)
+     ("\\.pdf\\'" . "evince %s ")
+     ("\\.tex\\'" . find-file-other-frame) ;; open tex in new frame
+     ("\\.Rnw\\'" . find-file-other-frame) ;; open rnw in new frame
+     )))
+
+;; Change default method for attachment to directory instead of id
+(setq org-attach-preferred-new-method 'ask)
+
+;; Inherit attachments to subtrees
+(setq org-attach-use-inheritance t)
+
