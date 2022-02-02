@@ -109,3 +109,18 @@
 ;; Define column view format
 (setq org-columns-default-format "%24ITEM %6TODO %4PRIORITY(Prio) %TAGS %CLOCKSUM(Total) %CLOCKSUM_T(Today) %EFFORT{:}")
 
+
+
+;;; --- Date/Time Org Settings 
+;; Enable sound when countdown is finished
+(setq org-clock-sound t) ; standard beep, can be changed
+
+;; Save clock history and running clock when emacs is closed
+(setq org-clock-persist t)
+(org-clock-persistence-insinuate) ; is needed
+
+;; Set clock history length from 5 to 9
+(setq org-clock-history-length 20)
+
+;; Global effort estimates are defined in the variable
+;; org-global-properties above in the section Properties and Column View
