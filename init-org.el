@@ -98,3 +98,14 @@
 
 ;; Exclusion of certain tags for tag inheritance
 (setq org-tags-exclude-from-inheritance '("project" "FLAGGED"))
+
+
+
+;;; --- Properties and Column View
+;; Define global properties
+(setq org-global-properties
+	'(("Effort_ALL" . "0 0:05 0:10 0:20 0:30 0:45 1:00 1:30 2:00 3:00")))
+
+;; Define column view format
+(setq org-columns-default-format "%24ITEM %6TODO %4PRIORITY(Prio) %TAGS %CLOCKSUM(Total) %CLOCKSUM_T(Today) %EFFORT{:}")
+
