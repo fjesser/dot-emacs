@@ -178,3 +178,8 @@
 	 )
 ))
 
+
+
+;;; --- Refiling Org Settings
+;; Define refile targets to move captured content to
+(setq org-refile-targets '((org-agenda-files :maxlevel . 4)))
