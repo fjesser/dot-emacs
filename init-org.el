@@ -319,3 +319,13 @@
 ;; emacs with:  M-x customize-group RET org-faces
 ;; see in init.el or result of the command above in which settings are customized
 
+
+
+;;; --- Markup Settings 
+
+;; Make LaTeX fragments bigger
+(setq org-format-latex-options (plist-put org-format-latex-options :scale 1.5))
+
+;; Don't show emphasis markers: *bold* becomes bold
+(setq org-hide-emphasis-markers t)
+
