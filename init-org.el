@@ -212,3 +212,110 @@
 ;; Inherit attachments to subtrees
 (setq org-attach-use-inheritance t)
 
+
+
+
+;;; --- Agenda Settings 
+;; Org Habit
+;(setq org-habit-show-habits nil) ; don't show habits in agenda automatically
+(setq org-habit-show-all-today t) ; if shown, show also not scheduled habits 
+
+;; Set agenda span to day (default: week)
+(setq org-agenda-span 'week)
+;; Set default duration of an appointment to 60 minutes
+(setq org-agenda-default-appointment-duration 60)
+
+;; Show diary mode in agenda by default
+(setq org-agenda-include-diary t)
+
+;; Custom agenda commands
+; first enable org-super-agenda-mode globally in order to use org-super-agenda functions
+(org-super-agenda-mode)
+(setq org-agenda-custom-commands
+      '(
+	;; ------ Definition of org-agendas (not org-super-agendas)
+	;; Deadline agenda
+	("d" "Deadlines" agenda ""
+	 ((org-agenda-span 'month)
+	  (org-agenda-include-diary nil)        ; exclude diary entries
+	  (org-agenda-entry-types '(:deadline))
+	  (org-deadline-warning-days 0)         ; don't show future deadlines for today's date
+	  ))
+	;; ------ Definition of org-super-agenda (separate package) commands 
+	;;  agenda
+	("g" "Grouped Agenda" agenda ""
+	 ((org-agenda-span 'day)			       
+	  (org-super-agenda-groups
+	   '((:name "Habits" :habit t :order 100) ; gather habits and display at last
+	     (:name "Today" :time-grid t)
+	     (:name "Overdue and due" :deadline past :deadline today)
+	     (:name "Due in next time" :deadline future)
+	     (:name "Important" :priority>= "B")
+	     (:name "Scheduled Today" :scheduled today)
+	     (:name "Work related tasks" :tag "work")
+	     (:name "Repeated tasks" :tag "repeated" :order 26)
+	     (:name "Tasks in progress" :scheduled past)
+             ))
+	  ))
+	;; Projects 
+	("p" "Projects" alltodo ""
+	 ((org-super-agenda-groups
+	   '(
+	     (:name "Projects" :tag "project" :order 1)
+	     ;; (:name "Active work projects" :and(:todo "ACTIVE" :tag "work" ) :order 2)
+	     ;; (:name "Dormant work projects" :and(:todo "DORMANT" :tag "work") :order 2)
+	     ;; (:name "Active non-work projects" :todo "ACTIVE" :order 0)
+	     ;; (:name "Work tasks" :tag "work" :order 3)
+	     ;; (:name "Prioritized tasks" :priority>= "C" :order 4)
+	     ;; (:name "Waiting" :todo "WAITING")
+	     (:discard (:anything t))
+	     ))
+	  ))
+	;; Priorities (i = important)
+	("i" "Super Importance" alltodo "" (
+	 (org-super-agenda-groups '(
+	     (:name "Very important tasks" :priority "A")
+	     (:name "Important tasks" :priority  "B")
+	     (:name "Not directly important tasks" :priority "C")
+	     (:discard (:anything t))
+	 ))
+	))
+	;; Log
+	("l" "Today's Log" agenda "" (
+	 (org-agenda-span 'day)
+	 ; enable log-mode by default = in agenda press 'l'
+	 (org-agenda-start-with-log-mode '(closed clock state)) 
+	 (org-agenda-start-with-clockreport-mode t)
+	 (org-super-agenda-groups '(
+	     (:name "Items closed today" :log close)
+	     (:name "Items clocked today" :log clock)
+	     (:discard (:anything t))
+	 ))
+	))
+	;; Future - only future items
+	("f" "Future" alltodo "" (
+	 (org-super-agenda-groups '(
+	    (:discard (:habit t)) ;; exclude habits
+	    (:name "Deadlines in the future" :deadline future)
+	    (:name "Scheduled in the future" :scheduled future)
+	    (:name "Waiting" :todo "WAITING")
+ 	    (:discard (:anything t))
+         )) 
+        ))
+	;; Auto Category
+	("c" "Auto-Category" alltodo "" (
+         (org-super-agenda-groups '((:auto-category)))
+	))
+))
+
+;; Schedule and Deadline on same day: Show only one
+(setq org-agenda-skip-scheduled-if-deadline-is-shown t)
+
+;; Only show the next future repeat
+;(setq org-agenda-show-future-repeats 'next) ; default: t
+
+;; Faces of org-agenda are set in init.el under 'custom-set-faces'
+;; These settings are located there because they are customized from within
+;; emacs with:  M-x customize-group RET org-faces
+;; see in init.el or result of the command above in which settings are customized
+
