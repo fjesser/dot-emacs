@@ -229,7 +229,7 @@
 (setq org-agenda-include-diary t)
 
 ;; Custom agenda commands
-; first enable org-super-agenda-mode globally in order to use org-super-agenda functions
+;; first enable org-super-agenda-mode globally in order to use org-super-agenda functions
 (org-super-agenda-mode)
 (setq org-agenda-custom-commands
       '(
@@ -328,4 +328,177 @@
 
 ;; Don't show emphasis markers: *bold* becomes bold
 (setq org-hide-emphasis-markers t)
+
+
+
+
+;;; --- Export Settings 
+;;;; ------ General Export Settings
+;; make sub-tree scope the default
+;; don't have to type C-s in dispatcher
+(setq org-export-initial-scope 'subtree)
+
+;; Meta export variables
+;; author field: user-full-name
+;; email: user-mail-address
+;; These are not set here because they are set inside mu4e depending on the
+;; context and setting them again would mess with the mu4e configuration
+
+;;;; ------ Export templates
+;; Actually, the export templates provided by C-c C-e # are really neat but it
+;; is quite difficult to modify them or create additional ones. Therefore, I
+;; created a function that inserts Org Properties and prompts for user input when
+;; necessary. 
+(defun my/latex-export-template ()
+  (interactive)
+  (org-set-property "EXPORT_AUTHOR" "Author's name")
+  (org-set-property "EXPORT_DATE" "\\today")
+  (org-set-property "EXPORT_FILE_NAME"
+		    (concat (read-directory-name "Set export folder: " "~/Documents/")
+			    (read-string "Enter filename without extension: ")
+			    ))
+  (org-set-property "EXPORT_OPTIONS" "toc:nil num:nil")
+  (org-set-property "EXPORT_LATEX_CLASS" "article")
+  (org-set-property "EXPORT_LATEX_HEADER" "\\input{~/.emacs.d/org-export-setupfiles/latex-article.tex}")
+  (org-set-property "EXPORT_LATEX_HEADER_EXTRA"
+		    (concat "\\fancyhead[L]{\\itshape "
+			    (read-string "Enter short title for left header: ")
+			    "}"))
+  )
+
+;; Bind function to kbd
+(define-key org-mode-map (kbd "C-c C-#") 'my/latex-export-template)
+
+
+;;;; ------ LaTeX and Beamer Export Settings
+;; Set hyperref template
+;; only lines after pdflang added
+(setq org-latex-hyperref-template
+"\\hypersetup{
+ pdfauthor={%a},
+ pdftitle={%t},
+ pdfkeywords={%k},
+ pdfsubject={%d},
+ pdfcreator={%c}, 
+ pdflang={%L},
+ %% Color options
+ colorlinks=true,
+ citecolor=[rgb]{0, 0, 0.5}, %% NavyBlue
+ linkcolor=[rgb]{0, 0, 0.5},
+ urlcolor=[rgb]{0, 0, 0.5},
+ %% Other options
+ bookmarksopen=true, %% opens toc in viewer
+}
+")
+
+
+;;;; ------ Beamer export
+(require 'ox-beamer)
+
+
+;;;; ------ Reveal export
+(require 'ox-reveal)
+;; Set location to reveal.js folger in URL form
+(setq org-reveal-root "file:///home/USER/Programs/reveal.js-master") 
+;; Export into a single file (with images etc.)
+(setq org-reveal-single-file t)
+
+
+;;;; ------ iCalendar Export Settings
+;; change default location of combined ics file of all agenda files
+(setq org-icalendar-combined-agenda-file "~/Documents/org/calendar-org.ics")
+;; insert description for combined icalendar export
+(setq org-icalendar-combined-description "Combined export of Org agenda files.")
+
+;; Export scheduled items that have todo states (including DONE) and that have no todo state
+;; Added "event-if-todo" and "event-if-not-todo"
+(setq org-icalendar-use-scheduled '(todo-start event-if-todo event-if-not-todo))
+
+;; Export deadline items that have todo states
+;; Added event-if-todo
+(setq org-icalendar-use-deadline '(event-if-not-todo todo-due event-if-todo))
+
+;; Exclude habits in icalendar export
+;; icalendar doesn't respect org-export-exclude-tags!
+(setq org-icalendar-exclude-tags '("habit"))
+
+;; Add hook for icalendar export (backend specific)
+;; Define function and add it as a hook
+(defun my-icalendar-export-addition (backend)
+  "Hook for icalendar export. Disable src code execution for faster export."
+    (when (org-export-derived-backend-p backend 'icalendar)
+      (setq-local org-export-use-babel nil) ;; prohibit babel execution
+      (setq-local org-export-with-broken-links t) ;; avoid error: link is not resolvable
+      (message "Start of icalendar agenda export.")
+      )
+    ) 
+
+;; Add function to export hook
+(add-hook 'org-export-before-processing-hook #'my-icalendar-export-addition)
+;; In addition, it is necessary that org-export-before-parsing-hook contains
+;; org-attach-expand-links for attachment links. This is ensured by requiring
+;; org-attach above.
+
+
+;; create combined ics file every 30 minutes
+;; ics file is uploaded to nextcloud an used there (see Calendar syncing via Nextcloud)
+;; 300 = start after delay of 300 seconds = 5 minutes; async init has to be created before
+;; (* 45 60) = repeat every X second; results in 45 minutes
+(run-with-timer 300 (* 45 60) 'org-icalendar-combine-agenda-files t) ;; t for async
+;; if something bad happens run M-x list-timers then choose timer and c for cancel
+
+
+;;;; ------ Async Export Settings
+;; Add initialization file for async export
+;; must come after other export settings in order that variable definitions are used
+;; Async export creates new instance of emacs with this init file
+(setq org-export-async-init-file "~/.emacs.d/org-export-setupfiles/async-init.el")
+
+;; Use next line for debugging purposes
+;;(setq org-export-async-debug t)
+
+;; Create directory for async-init file if non-existing
+(make-directory (file-name-directory org-export-async-init-file) ; get dir name of async init
+		t) ; creates directory if non-existing
+
+;; Create specified async-init.el file
+;; based on the variables and functions in this file here
+;; I'm not truly satisfied with this solution.
+;; Info: write-region should not be used with visited files. However, files are visited
+;; after init, therefore it is no problem but overwrites the file everytime.
+(write-region (concat 
+";; Emacs initialization file for async export in org-mode
+;; file is the value of org-export-async-init-file
+
+;; Attention !!!!!!
+;; Do not edit this file by hand because it is overwritten at startup
+;; Edit this file in init-org.el where it is created
+
+;;; --- General Export Settings/Copies 
+(setq org-export-with-broken-links 'mark)
+
+
+;;; --- iCalendar Export Copies 
+(setq 
+	org-icalendar-combined-agenda-file \"" org-icalendar-combined-agenda-file "\"
+	org-icalendar-use-scheduled '" (prin1-to-string      ; pay attention to ' before "
+					org-icalendar-use-scheduled) "
+	org-icalendar-use-deadline '" (prin1-to-string       ; pay attention to ' before "
+				       org-icalendar-use-deadline) "
+	org-agenda-default-appointment-duration " (number-to-string
+						   org-agenda-default-appointment-duration) "
+	org-icalendar-exclude-tags '"(prin1-to-string        ; pay attention to ' before "
+				      org-icalendar-exclude-tags)
+	")
+
+;; Hook for exports
+;; this is the my-icalendar-export-addition function
+(add-hook 'org-export-before-processing-hook " (prin1-to-string
+						(symbol-function 'my-icalendar-export-addition)) ")"
+						) ; end of concat and START argument
+	      nil ; END argument which is ignored
+	      org-export-async-init-file ; file argument
+	      )
+
+;; end of creation of async-init file (write-region command)
 
