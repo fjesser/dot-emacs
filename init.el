@@ -979,6 +979,19 @@ is called by `cfw:cp-set-selected-date'."
 
 ;; compile even if nothing changed
 (setq polymode-skip-processing-when-unmodified nil)
+
+
+;;; --- Multiple Cursors Settings
+;; Edit multiple lines at once
+(require 'multiple-cursors)
+
+;; Set keybindings
+(global-set-key (kbd "C-ü e") 'mc/edit-lines)
+(global-set-key (kbd "C-ü n") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-ü p") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C-ü h") 'mc/mark-all-like-this)
+
+
 ;;; --- Org Mode Settings 
 
 ;; Settings of org mode are loaded from the following file
