@@ -979,3 +979,14 @@ is called by `cfw:cp-set-selected-date'."
 
 ;; compile even if nothing changed
 (setq polymode-skip-processing-when-unmodified nil)
+;;; --- Org Mode Settings 
+
+;; Settings of org mode are loaded from the following file
+(load "~/.emacs.d/init-org.el")
+
+;; Note 1: Additionally, org-super-agenda settings and org-ref-cite
+;; settings are also set in this file.
+;; Note 2: The variable org-agenda-files (specifying the agenda files)
+;; is defined from within Emacs and is therefore set above under custom 
+;; variables. Because: org kbd C-c [ changes the custom variable
+
