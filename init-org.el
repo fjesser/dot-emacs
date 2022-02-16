@@ -535,3 +535,57 @@
 
 ;; Define keybinding for citations
 (define-key org-mode-map (kbd "C-¢") 'org-cite-insert) ; C-<Alt Gr>-c
+
+
+
+
+;;; --- Babel Settings 
+;; Define languages that are loaded and are hence supported
+(org-babel-do-load-languages
+	'org-babel-load-languages
+	'((emacs-lisp . t)
+	  (R . t)
+	  (python . t)
+	  (shell . t)))
+
+
+;; Redefine prompt for executing
+;; For safety reasons I previously changed only file local settings instead of this global
+;; one but this is also not safe since it is considered a safe local variable for every
+;; file. Therefore, I wrote a function that gets the buffer name and if it is in the
+;; agenda files, then don't prompt for confirmation. Inspired by org manual.
+(defun my-org-confirm-babel-evaluate (lang body)
+  (let		                        ; define temp variables and execute body
+      ;; variable definition
+      (
+       ;; variable containing org agenda files with absolute paths
+       (files-org-agenda (replace-regexp-in-string
+			  "~"                            ; to replace
+			  (expand-file-name "")          ; substitution, gives home directory
+			  (format "%s" org-agenda-files) ; agenda files as string "(~/... ~/...)"
+	 )
+	)
+       ;; variable containing buffer file name with absolute path
+       (buffer-file (buffer-file-name))
+       )				; end of variable definition
+    
+    ;; code block
+    ;; match current file in agenda files. if match returns index, else nil
+    ;; revert index to nil and nil to t with (null) and return
+    (null (string-match buffer-file files-org-agenda))
+    )
+ )
+
+;; Set confirm variable to function
+;; nil = no confirmation; t = prompts for confirmation 
+(setq org-confirm-babel-evaluate #'my-org-confirm-babel-evaluate)
+
+
+;; Change system-wide header arguments for source blocks
+;; cons function adds header arg, assq-delete-all deletes same preexisting header arg
+;; Export both, code and result
+(setq org-babel-default-header-args (cons '(:exports . "both")
+					  (assq-delete-all :exports org-babel-default-header-args)))
+;; Output column names in result
+(setq org-babel-default-header-args (cons '(:colnames . "yes")
+					  (assq-delete-all :colnames org-babel-default-header-args)))
