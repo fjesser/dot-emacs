@@ -502,3 +502,36 @@
 
 ;; end of creation of async-init file (write-region command)
 
+
+
+
+;;; --- Citation Settings
+
+;; make different processors available
+(require 'oc-biblatex)		 ; biblatex 
+(require 'oc-csl) 		 ; citation syle language via citeproc
+
+;; Define global bibliography
+(setq org-cite-global-bibliography bibtex-completion-bibliography) ; see init.el
+;; Define csl styles directory
+;; Directory is clone of csl styles github repo
+(setq org-cite-csl-styles-dir "~/.emacs.d/org-export-setupfiles/styles")
+
+
+;; Make org-ref-cite processors available
+;; makes org-ref functionality available using org-cite
+(add-to-list 'load-path "~/.emacs.d/org-ref-cite") ; cloned github repo
+(require 'org-ref-cite)				   ; load package
+
+;; Define cite processors
+(setq
+ org-cite-activate-processor 'org-ref-cite
+ org-cite-follow-processor 'org-ref-cite 	; opening cite links with org-ref-cite
+ org-cite-insert-processor 'org-ref-cite	; insert using bibtex
+ org-cite-export-processors
+      '((latex biblatex "apa") 		; apa = bibstyle
+	(t csl "apa.csl" "apa.csl")))   ; apa.csl file in org-cite-csl-styles-dir
+
+
+;; Define keybinding for citations
+(define-key org-mode-map (kbd "C-¢") 'org-cite-insert) ; C-<Alt Gr>-c
