@@ -51,3 +51,47 @@
 				   (call-interactively 'org-roam-ref-remove) ; else remove ref
 				     )))
 (global-set-key (kbd "C-ö g") 'org-roam-graph)
+
+
+;;;;; --------- Org-Roam Templates 
+;; Define org-roam templates - called by org-roam-capture (C-ö c)
+;; Note: (1) Several templates prompt for a directory to save the file in. This
+;; works by providing an elisp %(sexp) within the target file string. See
+;; variable-help for information. (2) Org-roam-bibtex templates are also set
+;; here. For further package config see below.
+(setq org-roam-capture-templates
+      '(
+	;; Default template
+	("d" "Default Roam Template" plain "%?"
+	 :target (file+head "%(read-directory-name \"Dir: \" 
+				org-roam-directory)/%<%Y%m%d%H%M%S>-${slug}.org"
+			    "#+title: ${title}\n")
+	 :unnarrowed t
+	 )
+	;; Ideas template 
+	("i" "Ideas Roam Template" plain "%?"
+	 :target (file+head "ideas/%<%Y%m%d%H%M%S>-${slug}.org"
+			    "#+title: ${title}\n")
+	 :unnarrowed t
+	 )
+       ;; ------ Org-roam-bibtex templates
+       ;; Reference template 
+       ("r" "Bibliographic Reference (Prompt for dir)" plain
+	(file "~/.emacs.d/org-capture-templates/orb-template.org")
+        :target (file "%(read-directory-name \"Dir: \" 
+			org-roam-directory)/${citekey}.org")
+	:unnarrowed t)
+       ;; Psychology template (same as reference but different dir start)
+       ("p" "Psychology - Bibliography Reference (Prompt for dir)" plain
+	(file "~/.emacs.d/org-capture-templates/orb-template.org")
+        :target (file "%(read-directory-name \"Dir: \" 
+                  (concat org-roam-directory \"/psychology\"))/${citekey}.org")
+	:unnarrowed t)
+       ;; Reference template with noter (org-roam-bibtex)
+       ("n" "Bibliographic Reference With Noter (Prompt for Dir)" plain
+	(file "~/.emacs.d/org-capture-templates/orb-noter-template.org")
+       :target (file "%(read-directory-name \"Dir: \" 
+                  (concat org-roam-directory \"/psychology\"))/${citekey}.org")
+	:unnarrowed t)
+       
+       ))
