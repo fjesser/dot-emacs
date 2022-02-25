@@ -95,3 +95,57 @@
 	:unnarrowed t)
        
        ))
+
+
+
+;;;;; --------- Org-roam Graphing Options 
+;; Note, these options influence the behavior
+;; of M-x org-roam-graph which creates an image (svg). 
+;; See additional configuration options on the website of graphviz.
+;; Graphviz is a program which is used by org-roam to graph the network. 
+
+;; Use graphviz program neato which is more compact than dot
+(setq org-roam-graph-executable "neato")
+
+;; Open produced graph with Emacs view file instead of firefox
+(setq org-roam-graph-viewer nil)
+
+
+;; Options for Graph (G) attributes
+(setq org-roam-graph-extra-config '(
+				    ("rankdir" . "TB")
+				    ("center" . "true")
+				    ("overlap" . "false") ; no overlap with neato
+				    ;; ("bgcolor" . "red") ; background color of everything
+))
+
+;; Options for the Node (N) attributes
+(setq org-roam-graph-node-extra-config
+      '(("id"
+	 ("style" . "bold,rounded,filled")
+	 ("fillcolor" . "#FFFFFF")	; white
+	 ("color" . "#C9C9C9")
+	 ("fontcolor" . "#111111"))
+	("http"
+	 ("style" . "rounded,filled")
+	 ("fillcolor" . "#FFFFFF")	; white
+	 ("color" . "#C9C9C9")
+	 ("fontcolor" . "#0A97A6"))
+	("https"
+	 ("style" . "rounded,filled")
+	 ("fillcolor" . "#FFFFFF")	; white
+	 ("color" . "#C9C9C9")
+	 ("fontcolor" . "#0A97A6"))
+	))
+
+;; Options for the Edges (E) attributes
+(setq org-roam-graph-edge-extra-config
+      '(("decorate" . "true")
+	;("dir" . "back") ; direction of arrow
+	))
+
+
+;; Define long title after 25 characters
+(setq org-roam-graph-max-title-length 25) ; default: 100
+;; Wrap long titles
+(setq org-roam-graph-shorten-titles 'wrap) ; default: truncate
